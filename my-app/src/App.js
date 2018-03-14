@@ -5,9 +5,9 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name: 'Max', age: 28 },
-      { name: 'Lia', age: 25 },
-      { name: 'Lars', age: 20 }
+      { id: 1, name: 'Max', age: 28 },
+      { id: 2, name: 'Lia', age: 25 },
+      { id: 3, name: 'Lars', age: 20 }
     ],
     otherState: 'some other value',
     showPersons: false
@@ -15,18 +15,26 @@ class App extends Component {
 
   switchNameHandler = (newName) => {
     this.setState({persons: [
-      { name: newName, age: 21 },
-      { name: 'Lia', age: 25 },
-      { name: 'Lars', age: 21 }
+      { id: 1, name: newName, age: 21 },
+      { id: 2, name: 'Lia', age: 25 },
+      { id: 3, name: 'Lars', age: 21 }
     ]})
   }
 
-  nameChangedHandler = (event) => {
-    this.setState({persons: [
-      { name: 'Julie', age: 21 },
-      { name: event.target.value, age: 25 },
-      { name: 'Lars', age: 21 }
-    ]})
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+    this.setState({persons: persons})
   }
 
   togglePersonsHandler = () => {
@@ -35,7 +43,8 @@ class App extends Component {
   }
 
   deletePersonHandler = (index) => {
-    const persons = this.state.persons;
+    // copy the array
+    const persons = [...this.state.persons];
     persons.splice(index, 1);
     this.setState({persons: persons});
   }
@@ -57,7 +66,9 @@ class App extends Component {
             return <Person 
                 name={person.name} 
                 age={person.age} 
-                click={() => this.deletePersonHandler(index)} />
+                click={() => this.deletePersonHandler(index)} 
+                key={person.id} 
+                changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
         </div>
       );
@@ -68,7 +79,7 @@ class App extends Component {
         <p>This is working</p>
         <button 
           onClick={this.togglePersonsHandler}
-          style={style}>Switch Name</button>
+          style={style}>Toggle Persons</button>
         {persons}
       </div>
     );
