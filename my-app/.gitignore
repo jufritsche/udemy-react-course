@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-./../lists-conditionals--assignment-problem/node_modules
+../lists-conditionals--assignment-problem/node_modules
 
 # testing
 /coverage
